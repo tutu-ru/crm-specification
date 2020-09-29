@@ -85,7 +85,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Contact"
+              $ref: "#/components/schemas/ContactList"
       responses:
         "200":
           description: "Количество добавленных/обновленных контактов контактов"
@@ -121,7 +121,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Order"
+              $ref: "#/components/schemas/OrderList"
       responses:
         "200":
           description: "Количество добавленных/обновленных заказов"
@@ -131,7 +131,7 @@ paths:
                 $ref: "#/components/schemas/OrderResponse"
 components:
   schemas:
-    Contact:
+    ContactList:
       type: "array"
       items:
         required:
@@ -183,138 +183,136 @@ components:
           MobilePhone: "+79995557765"
           Email: "email@mail.com"
           BirthDate: "23.12.2011"
-    Order:
-      type: "array"
+
+    OrderBase:
+      type: "object"
+      required:
+      - "IDClient"
+      - "IDOrder"
+      - "OrderStatus"
+      - "Type"
+      - "CreatedOn"
+      - "DepartureCity"
+      - "ArrivalСity"
+      - "DepartureDate"
+      - "ArrivalDate"
+      properties:
+        IDClient:
+          type: "string"
+        IDOrder:
+          type: "string"
+        CreatedOn:
+          type: "string"
+          format: "date-time"
+        ArrivalСity:
+          type: "string"
+        DepartureCity:
+          type: "string"
+        DepartureDate:
+          type: "string"
+          format: "date-time"
+        ArrivalDate:
+          type: "string"
+          format: "date-time"
+        LinkTripSurvey:
+          type: "string"
+          format: "url"
+          nullable: true
+        LinkNPSSurvey:
+          type: "string"
+          format: "url"
+          nullable: true
+        Type:
+          type: "string"
+        OrderStatus:
+          type: "string"
+
+    OrderAvia:
       example:
-      - IDClient: "1"
+        IDClient: "1"
         IDOrder: "1"
         CreatedOn: "21.09.2020 20:12:31.12423"
-        ArrivalСity: "Moskow"
+        ArrivalСity: "Moscow"
         DepartureCity: "Saint-Peterburg"
-        DepartureDate: "21.09.2020"
-        DepartureTime: "20:12"
-        ArrivalDate: "21.09.2020"
-        ArrivalTime: "23:12"
+        DepartureDate: "2020-09-21T20:12:00+03:00"
+        ArrivalDate: "2020-09-21T23:34:00+03:00"
         Airline: "Pobeda"
         FlightNumber: "1234"
-        NameArrivalAirport: "Domodedovo airport"
-        LinkSurveyFlight: "https://link-to-survey-flight.com"
+        NameDepartureAirport: "Domodedovo airport"
+        LinkTripSurvey: "https://link-to-survey-flight.com"
         LinkNPSSurvey: "https://link-to-survey-flight.com"
-        NumberCar: ""
-        NumberTrain: ""
-        NameArrivalStation: ""
-        Type: "Авиа"
+        Type: "avia"
         OrderStatus: "Завершен"
-      - IDClient: "4"
+      required:
+        - "Airline"
+        - "FlightNumber"
+        - "NameDepartureAirport"
+      allOf:
+        - $ref: '#/components/schemas/OrderBase'
+        - type: object
+          properties:
+            Airline:
+              type: "string"
+            FlightNumber:
+              type: "string"
+            NameDepartureAirport:
+              type: "string"
+
+    OrderTrain:
+      example:
+        IDClient: "2"
         IDOrder: "2"
         CreatedOn: "21.09.2020 20:12:31.12423"
-        ArrivalСity: "Moskow"
-        DepartureCity: "Saint-Peterburg"
-        DepartureDate: "21.09.2020"
-        DepartureTime: "20:12"
-        ArrivalDate: "21.09.2020"
-        ArrivalTime: "23:12"
-        Airline: ""
-        FlightNumber: ""
-        NameArrivalAirport: ""
-        LinkSurveyFlight: ""
-        LinkNPSSurvey: "https://link-to-survey-flight.com"
-        NumberCar: ""
-        NumberTrain: ""
-        NameArrivalStation: "Moskow Autostation"
-        Type: "Автобус"
+        ArrivalСity: "Сочи"
+        DepartureCity: "Москва"
+        DepartureDate: "2020-09-21T20:12:00+03:00"
+        ArrivalDate: "2020-09-22T10:15:00+03:00"
+        NumberCar: "11"
+        NumberTrain: "083М"
+        NameDepartureStation: "Сочи"
+        LinkTripSurvey: "https://link-to-survey-train.com"
+        LinkNPSSurvey: "https://link-to-survey-train.com"
+        Type: "train"
         OrderStatus: "Завершен"
-      - IDClient: "1"
-        IDOrder: ""
-        CreatedOn: "02.09.2020 20:12:31.12000"
-        ArrivalСity: "Moskow"
-        DepartureCity: "Saint-Peterburg"
-        DepartureDate: "21.09.2020"
-        DepartureTime: "20:12"
-        ArrivalDate: "21.09.2020"
-        ArrivalTime: "23:12"
-        Airline: "Pobeda"
-        FlightNumber: "1221"
-        NameArrivalAirport: "Domodedovo airport"
-        LinkSurveyFlight: "https://link-to-survey-flight.com"
-        LinkNPSSurvey: "https://link-to-survey-flight.com"
-        NumberCar: ""
-        NumberTrain: ""
-        NameArrivalStation: ""
-        Type: "Авиа"
-        OrderStatus: "Оформление"
-      - IDClient: "2"
-        IDOrder: "3"
-        CreatedOn: "02.09.2020 20:12:31.12000"
-        ArrivalСity: "Moskow"
-        DepartureCity: "Saint-Peterburg"
-        DepartureDate: "21.09.2020"
-        DepartureTime: "20:12"
-        ArrivalDate: "21.09.2020"
-        ArrivalTime: "23:12"
-        Airline: "Pobeda"
-        FlightNumber: "1221"
-        NameArrivalAirport: "Domodedovo airport"
-        LinkSurveyFlight: "https://link-to-survey-flight.com"
-        LinkNPSSurvey: "https://link-to-survey-flight.com"
-        NumberCar: ""
-        NumberTrain: ""
-        NameArrivalStation: ""
-        Type: ""
-        OrderStatus: "Оформление"
+      required:
+        - "NumberCar"
+        - "NumberTrain"
+        - "NameDepartureStation"
+      allOf:
+        - $ref: '#/components/schemas/OrderBase'
+        - type: object
+          properties:
+            NumberCar:
+              type: "string"
+            NumberTrain:
+              type: "string"
+            NameDepartureStation:
+              type: "string"
+
+    OrderBus:
+      example:
+        IDClient: "3"
+        IDOrder: "4"
+        CreatedOn: "21.09.2020 20:12:31.12423"
+        ArrivalСity: "Москва"
+        DepartureCity: "Санкт-Петербург"
+        DepartureDate: "2020-09-21T20:12:00+03:00"
+        ArrivalDate: "2020-09-22T06:15:00+03:00"
+        LinkTripSurvey: "https://link-to-survey-bus.com"
+        LinkNPSSurvey: "https://link-to-survey-bus.com"
+        Type: "bus"
+        OrderStatus: "Завершен"
+      allOf:
+        - $ref: '#/components/schemas/OrderBase'
+
+    OrderList:
+      type: "array"
       items:
-        required:
-        - "IDClient"
-        - "IDOrder"
-        - "OrderStatus"
-        - "Type"
-        type: "object"
-        properties:
-          IDClient:
-            type: "string"
-          IDOrder:
-            type: "string"
-          CreatedOn:
-            type: "string"
-            format: "date-time"
-          ArrivalСity:
-            type: "string"
-          DepartureCity:
-            type: "string"
-          DepartureDate:
-            type: "string"
-            format: "date"
-          ArrivalDate:
-            type: "string"
-            format: "date"
-          Airline:
-            type: "string"
-          FlightNumber:
-            type: "string"
-          NameArrivalAirport:
-            type: "string"
-          LinkSurveyFlight:
-            type: "string"
-            format: "url"
-          LinkNPSSurvey:
-            type: "string"
-            format: "url"
-          NumberCar:
-            type: "string"
-          NumberTrain:
-            type: "string"
-          NameArrivalStation:
-            type: "string"
-          Type:
-            type: "string"
-          DepartureTime:
-            type: "string"
-            format: "time"
-          ArrivalTime:
-            type: "string"
-            format: "time"
-          OrderStatus:
-            type: "string"
+        oneOf:
+          - $ref: '#/components/schemas/OrderAvia'
+          - $ref: '#/components/schemas/OrderTrain'
+          - $ref: '#/components/schemas/OrderBus'
+
     ContactResponse:
       type: "object"
       properties:
