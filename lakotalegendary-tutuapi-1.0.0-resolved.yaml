@@ -1,0 +1,438 @@
+---
+openapi: "3.0.0"
+info:
+  title: "Интеграция с MDM"
+  description: "Описаны 2 точки интеграции с MDM. Для добавления контактов использ\
+    уется точка `/KmkContactService/Contacts`, для заказов - `/KmkOrderService/Orders`\n"
+  version: "1.0.0"
+servers:
+- url: "https://<адрес приложения>"
+  description: "Адрес приложения Creatio"
+tags:
+- name: "anonymous"
+  description: "Точка для получения авторизационных кук и `BPMCSRF-токена` для аут\
+    ентификации внешних запросов в приложении\n"
+- name: "default"
+  description: "Operations available to regular developers"
+paths:
+  /ServiceModel/AuthService.svc/Login:
+    post:
+      tags:
+      - "anonymous"
+      summary: "Запрос для аутентификации (анонимный)"
+      operationId: "Auth"
+      parameters:
+      - name: "ForceUseSession"
+        in: "header"
+        description: "Заголовок для принудительного использования уже существующей\
+          \ сессии"
+        required: false
+        style: "simple"
+        explode: false
+        schema:
+          type: "boolean"
+          example: true
+      requestBody:
+        description: "Используется для аутентификации других методов для получения\
+          \ `BPMCSRF-токена`"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Creds"
+      responses:
+        "200":
+          description: "Результат запроса сервиса аутентификации. Возвращает 200 О\
+            К даже при неправильных данных входа. Успешная авторизация вернет `\"\
+            Code\": 0`"
+          headers:
+            Set-Cookie:
+              style: "simple"
+              explode: false
+              schema:
+                type: "string"
+                example: "BPMCSRF=nCLTbvecrxFS5nc1afIJmO"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: "bad input parameter"
+  /0/rest/KmkContactService/Contacts:
+    post:
+      summary: "Точка интеграции для добавления/изменения контактов"
+      description: "Метод для создания/обновления контактов в Creatio. Для выполне\
+        ния запроса требуется `BPMCSRF-токен` и `Cookie` от запроса авторизации"
+      operationId: "CreateContacts"
+      parameters:
+      - name: "cookie"
+        in: "header"
+        required: false
+        style: "simple"
+        explode: false
+        schema:
+          type: "string"
+          example: "BPMCSRF=nCLTbvecrxFS5nc1afIJmO"
+      - name: "BPMCSRF"
+        in: "header"
+        required: false
+        style: "simple"
+        explode: false
+        schema:
+          type: "string"
+          example: "nCLTbvecrxFS5nc1afIJmO"
+      requestBody:
+        description: "Данные о контакте"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Contact"
+      responses:
+        "200":
+          description: "Количество добавленных/обновленных контактов контактов"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactResponse"
+  /0/rest/KmkOrderService/Orders:
+    post:
+      summary: "Точка интеграции для добавления/изменения заказов"
+      description: "Метод для создания/обновления заказов в Creatio. Для выполнени\
+        я запроса требуется `BPMCSRF-токен` и `Cookie` от запроса авторизации"
+      operationId: "CreateOrders"
+      parameters:
+      - name: "cookie"
+        in: "header"
+        required: false
+        style: "simple"
+        explode: false
+        schema:
+          type: "string"
+          example: "BPMCSRF=nCLTbvecrxFS5nc1afIJmO"
+      - name: "BPMCSRF"
+        in: "header"
+        required: false
+        style: "simple"
+        explode: false
+        schema:
+          type: "string"
+          example: "nCLTbvecrxFS5nc1afIJmO"
+      requestBody:
+        description: "Данные о заказе"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Order"
+      responses:
+        "200":
+          description: "Количество добавленных/обновленных заказов"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderResponse"
+components:
+  schemas:
+    Contact:
+      type: "array"
+      items:
+        required:
+        - "Name"
+        - "UniqueIdentifier"
+        type: "object"
+        properties:
+          UniqueIdentifier:
+            type: "string"
+          Name:
+            type: "string"
+          Surname:
+            type: "string"
+          MiddleName:
+            type: "string"
+          MobilePhone:
+            type: "string"
+          Email:
+            type: "string"
+          BirthDate:
+            type: "string"
+            format: "date"
+        example:
+        - UniqueIdentifier: "1"
+          Name: "Alex"
+          Surname: ""
+          MiddleName: ""
+          MobilePhone: "+79995557766"
+          Email: "email@mail.com"
+          BirthDate: "23.12.2012"
+        - UniqueIdentifier: "2"
+          Name: "Victor"
+          Surname: ""
+          MiddleName: ""
+          MobilePhone: "+79995557222"
+          Email: "email@mail.ru"
+          BirthDate: "23.12.1977"
+        - UniqueIdentifier: ""
+          Name: "John"
+          Surname: ""
+          MiddleName: ""
+          MobilePhone: "+79995557765"
+          Email: "email@mail.com"
+          BirthDate: "23.12.2011"
+        - UniqueIdentifier: "3"
+          Name: ""
+          Surname: ""
+          MiddleName: ""
+          MobilePhone: "+79995557765"
+          Email: "email@mail.com"
+          BirthDate: "23.12.2011"
+    Order:
+      type: "array"
+      example:
+      - IDClient: "1"
+        IDOrder: "1"
+        CreatedOn: "21.09.2020 20:12:31.12423"
+        ArrivalСity: "Moskow"
+        DepartureCity: "Saint-Peterburg"
+        DepartureDate: "21.09.2020"
+        DepartureTime: "20:12"
+        ArrivalDate: "21.09.2020"
+        ArrivalTime: "23:12"
+        Airline: "Pobeda"
+        FlightNumber: "1234"
+        NameArrivalAirport: "Domodedovo airport"
+        LinkSurveyFlight: "https://link-to-survey-flight.com"
+        LinkNPSSurvey: "https://link-to-survey-flight.com"
+        NumberCar: ""
+        NumberTrain: ""
+        NameArrivalStation: ""
+        Type: "Авиа"
+        OrderStatus: "Завершен"
+      - IDClient: "4"
+        IDOrder: "2"
+        CreatedOn: "21.09.2020 20:12:31.12423"
+        ArrivalСity: "Moskow"
+        DepartureCity: "Saint-Peterburg"
+        DepartureDate: "21.09.2020"
+        DepartureTime: "20:12"
+        ArrivalDate: "21.09.2020"
+        ArrivalTime: "23:12"
+        Airline: ""
+        FlightNumber: ""
+        NameArrivalAirport: ""
+        LinkSurveyFlight: ""
+        LinkNPSSurvey: "https://link-to-survey-flight.com"
+        NumberCar: ""
+        NumberTrain: ""
+        NameArrivalStation: "Moskow Autostation"
+        Type: "Автобус"
+        OrderStatus: "Завершен"
+      - IDClient: "1"
+        IDOrder: ""
+        CreatedOn: "02.09.2020 20:12:31.12000"
+        ArrivalСity: "Moskow"
+        DepartureCity: "Saint-Peterburg"
+        DepartureDate: "21.09.2020"
+        DepartureTime: "20:12"
+        ArrivalDate: "21.09.2020"
+        ArrivalTime: "23:12"
+        Airline: "Pobeda"
+        FlightNumber: "1221"
+        NameArrivalAirport: "Domodedovo airport"
+        LinkSurveyFlight: "https://link-to-survey-flight.com"
+        LinkNPSSurvey: "https://link-to-survey-flight.com"
+        NumberCar: ""
+        NumberTrain: ""
+        NameArrivalStation: ""
+        Type: "Авиа"
+        OrderStatus: "Оформление"
+      - IDClient: "2"
+        IDOrder: "3"
+        CreatedOn: "02.09.2020 20:12:31.12000"
+        ArrivalСity: "Moskow"
+        DepartureCity: "Saint-Peterburg"
+        DepartureDate: "21.09.2020"
+        DepartureTime: "20:12"
+        ArrivalDate: "21.09.2020"
+        ArrivalTime: "23:12"
+        Airline: "Pobeda"
+        FlightNumber: "1221"
+        NameArrivalAirport: "Domodedovo airport"
+        LinkSurveyFlight: "https://link-to-survey-flight.com"
+        LinkNPSSurvey: "https://link-to-survey-flight.com"
+        NumberCar: ""
+        NumberTrain: ""
+        NameArrivalStation: ""
+        Type: ""
+        OrderStatus: "Оформление"
+      items:
+        required:
+        - "IDClient"
+        - "IDOrder"
+        - "OrderStatus"
+        - "Type"
+        type: "object"
+        properties:
+          IDClient:
+            type: "string"
+          IDOrder:
+            type: "string"
+          CreatedOn:
+            type: "string"
+            format: "date-time"
+          ArrivalСity:
+            type: "string"
+          DepartureCity:
+            type: "string"
+          DepartureDate:
+            type: "string"
+            format: "date"
+          ArrivalDate:
+            type: "string"
+            format: "date"
+          Airline:
+            type: "string"
+          FlightNumber:
+            type: "string"
+          NameArrivalAirport:
+            type: "string"
+          LinkSurveyFlight:
+            type: "string"
+            format: "url"
+          LinkNPSSurvey:
+            type: "string"
+            format: "url"
+          NumberCar:
+            type: "string"
+          NumberTrain:
+            type: "string"
+          NameArrivalStation:
+            type: "string"
+          Type:
+            type: "string"
+          DepartureTime:
+            type: "string"
+            format: "time"
+          ArrivalTime:
+            type: "string"
+            format: "time"
+          OrderStatus:
+            type: "string"
+    ContactResponse:
+      type: "object"
+      properties:
+        Response:
+          type: "array"
+          example:
+          - Result: "created"
+            CRMId: "3c0b9f2b-6def-40ba-bd3b-d6237e1c3146"
+            UniqueIdentifier: "1"
+            Description: ""
+          - Result: "edited"
+            CRMId: "ba6bc2f3-07dc-4375-bf73-e9b8b2c9cabe"
+            UniqueIdentifier: "2"
+            Description: ""
+          - Result: "error"
+            CRMId: null
+            UniqueIdentifier: null
+            Description: "Не заполенен обязательный параметр UniqueIdentifier"
+          - Result: "error"
+            CRMId: null
+            UniqueIdentifier: "3"
+            Description: "Не заполенен обязательный параметр Name"
+          items:
+            type: "object"
+            properties:
+              Result:
+                type: "string"
+              CRMId:
+                type: "string"
+                format: "uuid"
+              UniqueIdentifier:
+                type: "string"
+              Description:
+                type: "string"
+    OrderResponse:
+      type: "object"
+      properties:
+        response:
+          type: "array"
+          example:
+          - Result: "created"
+            CRMId: "3c0b9f2b-6def-40ba-bd3b-d6237e1c3146"
+            IDOrder: "1"
+            Description: ""
+          - Result: "edited"
+            CRMId: "58014498-5df1-4ad2-8456-2c9fbe44ea1f"
+            IDOrder: "2"
+            Description: ""
+          - Result: "error"
+            CRMId: null
+            IDOrder: null
+            Description: "Не заполенен обязательный параметр IDOrder"
+          - Result: "error"
+            CRMId: null
+            IDOrder: "3"
+            Description: "Не заполенен обязательный параметр Type"
+          items:
+            type: "object"
+            properties:
+              Result:
+                type: "string"
+              CRMId:
+                type: "string"
+                format: "uuid"
+              IDOrder:
+                type: "string"
+              Description:
+                type: "string"
+    Creds:
+      required:
+      - "UserName"
+      - "UserPassword"
+      type: "object"
+      properties:
+        UserName:
+          type: "string"
+          example: "Supervisor"
+        UserPassword:
+          type: "string"
+          example: "Supervisor"
+    AuthResponse:
+      type: "object"
+      properties:
+        Code:
+          type: "integer"
+          example: 1
+        Message:
+          type: "string"
+          example: "Вы ввели неправильный логин или пароль. Проверьте корректность\
+            \ введенных данных или обратитесь к системному администратору. Системн\
+            ый администратор может изменить пароль на странице пользователя"
+        Exception:
+          $ref: "#/components/schemas/Exception"
+        PasswordChangeUrl:
+          type: "string"
+          format: "url"
+          example: "https://www.acme-corp.com"
+        RedirectUrl:
+          type: "string"
+          format: "url"
+          example: "https://www.acme-corp.com"
+    Exception:
+      type: "object"
+      properties:
+        HelpLink:
+          type: "string"
+          format: "url"
+          example: "https://www.acme-corp.com"
+        InnerException:
+          type: "string"
+          example: "System.Security.SecurityException"
+        Message:
+          type: "string"
+          example: "Вы ввели неправильный логин или пароль. Проверьте корректность\
+            \ введенных данных или обратитесь к системному администратору. Системн\
+            ый администратор может изменить пароль на странице пользователя"
+        StackTrace:
+          type: "string"
+        Type:
+          type: "string"
+          example: "System.Security.SecurityException"
