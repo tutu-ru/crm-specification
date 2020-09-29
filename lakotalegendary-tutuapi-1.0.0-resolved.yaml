@@ -231,7 +231,7 @@ components:
       example:
         IDClient: "1"
         IDOrder: "1"
-        CreatedOn: "21.09.2020 20:12:31.12423"
+        CreatedOn: "2020-09-21T20:12:31+03:00"
         ArrivalСity: "Moscow"
         DepartureCity: "Saint-Peterburg"
         DepartureDate: "2020-09-21T20:12:00+03:00"
@@ -262,7 +262,7 @@ components:
       example:
         IDClient: "2"
         IDOrder: "2"
-        CreatedOn: "21.09.2020 20:12:31.12423"
+        CreatedOn: "2020-09-21T20:12:31+03:00"
         ArrivalСity: "Сочи"
         DepartureCity: "Москва"
         DepartureDate: "2020-09-21T20:12:00+03:00"
@@ -293,7 +293,7 @@ components:
       example:
         IDClient: "3"
         IDOrder: "4"
-        CreatedOn: "21.09.2020 20:12:31.12423"
+        CreatedOn: "2020-09-21T20:12:31+03:00"
         ArrivalСity: "Москва"
         DepartureCity: "Санкт-Петербург"
         DepartureDate: "2020-09-21T20:12:00+03:00"
