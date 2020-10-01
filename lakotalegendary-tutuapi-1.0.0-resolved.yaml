@@ -76,7 +76,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ContactList'
+              $ref: "#/components/schemas/ContactList"
         description: "Данные о контакте"
       responses:
         '200':
@@ -107,7 +107,7 @@ paths:
         content:
           application/json:
             schema:
-                $ref: '#/components/schemas/OrderList'
+                $ref: "#/components/schemas/OrderList"
         description: "Данные о заказе"
       responses:
         '200':
@@ -178,6 +178,7 @@ components:
                 MobilePhone: "+79995557765"
                 Email: "email@mail.com"
                 BirthDate: "23.12.2011"  
+
     OrderBase:
       type: "object"
       required:
@@ -238,6 +239,7 @@ components:
         Type: "avia"
         OrderStatus: "paid"
         OrderNumber: "Заказ 134"
+
       required:
         - "Airline"
         - "FlightNumber"
@@ -288,7 +290,6 @@ components:
     OrderBus:
       example:
         IDClient: "3"
-        # IDOrder: "4"
         CreatedOn: "2020-09-21T20:12:31+03:00"
         ArrivalСity: "Москва"
         DepartureCity: "Санкт-Петербург"
@@ -299,6 +300,7 @@ components:
         Type: "bus"
         OrderStatus: "refunded"
         OrderNumber: "Заказ 134"
+
       allOf:
         - $ref: '#/components/schemas/OrderBase'
 
