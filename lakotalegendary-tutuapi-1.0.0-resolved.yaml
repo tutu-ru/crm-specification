@@ -1,7 +1,7 @@
 openapi: 3.0.0
 servers:
   - description: Адрес приложения Creatio
-    url: https://hetzner1.k-matika.ru:49002
+    url: https://<адрес приложения>
 info:
   version: "1.0.0"
   title: Интеграция с MDM
