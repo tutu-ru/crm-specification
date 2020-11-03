@@ -1,17 +1,9 @@
 openapi: 3.0.0
-servers:
-  - description: Адрес приложения Creatio
-    url: https://<адрес приложения>
 info:
   version: "1.0.0"
   title: Интеграция с MDM
   description: |
     Описаны 2 точки интеграции с MDM. Для добавления контактов используется точка `/KmkContactService/Contacts`, для заказов - `/KmkOrderService/Orders`
-#   contact:
-#     email: you@your-company.com
-#   license:
-#     name: IIS
-#     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 tags:
   - name: anonymous
     description: |
